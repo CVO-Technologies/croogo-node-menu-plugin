@@ -1,0 +1,8 @@
+{
+	"description": "Provides easy access to node editing",
+	"dependencies": {
+		"plugins": [
+			"Nodes"
+		]
+	}
+}
