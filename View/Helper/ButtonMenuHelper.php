@@ -9,6 +9,13 @@ class ButtonMenuHelper extends AppHelper {
 		'Croogo.Layout',
 	);
 
+	public function __construct(View $View, $settings = array()) {
+		$this->helpers[] = Configure::read('Site.acl_plugin') . '.' . Configure::read('Site.acl_plugin');
+
+		parent::__construct($View, $settings);
+	}
+
+
 	public function buttonMenu($nodeId, $menus, $options = array(), $depth = 0) {
 		$options = Hash::merge(array(
 			'type' => 'dropdown',
@@ -21,9 +28,6 @@ class ButtonMenuHelper extends AppHelper {
 
 		$aclPlugin = Configure::read('Site.acl_plugin');
 		$userId = AuthComponent::user('id');
-		if (empty($userId)) {
-			return '';
-		}
 
 		$sidebar = $options['type'] === 'sidebar';
 		$htmlAttributes = $options['htmlAttributes'];
@@ -41,9 +45,16 @@ class ButtonMenuHelper extends AppHelper {
 				$out .= $this->Html->tag('li', null, $liOptions);
 				continue;
 			}
-			if ($currentRole != 'admin' && !$this->{$aclPlugin}->linkIsAllowedByUserId($userId, $menu['url'])) {
-				continue;
+			if ($userId) {
+				if ($currentRole != 'admin' && !$this->{$aclPlugin}->linkIsAllowedByUserId($userId, $menu['url'])) {
+					continue;
+				}
+			} else {
+				if (!$this->{$aclPlugin}->linkIsAllowedByRoleId(3, $menu['url'])) {
+					continue;
+				}
 			}
+
 
 			if (empty($menu['htmlAttributes']['class'])) {
 				$menuClass = Inflector::slug(strtolower('menu-' . $menu['title']), '-');

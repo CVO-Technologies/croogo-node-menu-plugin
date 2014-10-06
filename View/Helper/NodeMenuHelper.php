@@ -34,7 +34,8 @@ class NodeMenuHelper extends AppHelper {
  */
 	public function afterNodeInfo() {
 		return $this->_View->element('NodeMenu.node-menu', array(
-			'id' => (int) $this->Nodes->field('id')
+			'id' => (int) $this->Nodes->field('id'),
+			'type' => $this->Nodes->field('type')
 		));
 	}
 
